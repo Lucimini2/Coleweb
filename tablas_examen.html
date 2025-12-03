@@ -24,6 +24,7 @@
       <div class="flex gap-2 mt-4">
         <button id="next" class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" disabled>Siguiente</button>
         <button id="reset" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Reiniciar</button>
+        <button id="finish" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" disabled>Terminar</button>
       </div>
     </div>
   </div>
@@ -33,6 +34,7 @@
     const options = document.getElementById('options');
     const next = document.getElementById('next');
     const reset = document.getElementById('reset');
+    const finish = document.getElementById('finish');
     const size10 = document.getElementById('size10');
     const size20 = document.getElementById('size20');
     const size30 = document.getElementById('size30');
@@ -47,12 +49,13 @@
     function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
     function generarOpciones(correct){ const s=new Set([correct]); while(s.size<3){ const delta=[1,2,3,4,5][randomInt(0,4)]*(Math.random()<0.5?-1:1); const c=correct+delta; if(c>0&&c<=100) s.add(c);} return Array.from(s).sort(()=>Math.random()-0.5); }
     function actualizarScore(){ score.textContent='Aciertos: '+aciertos+' / '+total+' · Objetivo: '+totalPreguntas; }
-    function renderPregunta(){ if(terminado) return; if(total>=totalPreguntas){ mostrarFin(); return; } tabla=randomInt(1,10); multiplicador=randomInt(1,10); correcto=tabla*multiplicador; question.textContent=tabla+' × '+multiplicador+' = ?'; options.innerHTML=''; const opts=generarOpciones(correcto); const base='px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70 hover:border-indigo-400 hover:bg-slate-700'; opts.forEach(v=>{ const b=document.createElement('button'); b.className=base; b.textContent=String(v); b.addEventListener('click',()=>seleccionar(v,b)); options.appendChild(b); }); next.disabled=true; respondido=false; }
-    function seleccionar(valor,btn){ if(respondido) return; respondido=true; total+=1; const btns=Array.from(options.querySelectorAll('button')); btns.forEach(b=>b.disabled=true); const removeBase=b=>{ b.classList.remove('bg-slate-800','border-slate-700','text-slate-100'); }; if(valor===correcto){ aciertos+=1; removeBase(btn); btn.classList.add('bg-green-500','text-green-950','border-green-600'); } else { removeBase(btn); btn.classList.add('bg-red-500','text-red-950','border-red-600'); const correctoBtn=btns.find(b=>parseInt(b.textContent,10)===correcto); if(correctoBtn){ removeBase(correctoBtn); correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600'); } } actualizarScore(); if(total>=totalPreguntas){ mostrarFin(); } else { next.disabled=false; } }
-    function mostrarFin(){ terminado=true; const nota=Math.max(1,Math.round((aciertos/totalPreguntas)*10)); question.textContent='Has terminado el examen de '+totalPreguntas+' preguntas. Aciertos: '+aciertos+' / '+totalPreguntas+'. Nota: '+nota+' / 10'; options.innerHTML=''; next.disabled=true; }
-    function reiniciar(){ aciertos=0; total=0; terminado=false; actualizarScore(); renderPregunta(); }
+    function renderPregunta(){ if(terminado) return; if(total>=totalPreguntas){ mostrarFin(); return; } tabla=randomInt(1,10); multiplicador=randomInt(1,10); correcto=tabla*multiplicador; question.textContent=tabla+' × '+multiplicador+' = ?'; options.innerHTML=''; const opts=generarOpciones(correcto); const base='px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70'; opts.forEach(v=>{ const b=document.createElement('button'); b.className=base; b.textContent=String(v); b.addEventListener('click',()=>seleccionar(v,b)); options.appendChild(b); }); next.disabled=true; respondido=false; }
+    function seleccionar(valor,btn){ if(respondido) return; respondido=true; total+=1; const btns=Array.from(options.querySelectorAll('button')); btns.forEach(b=>b.disabled=true); const removeBase=b=>{ b.classList.remove('bg-slate-800','border-slate-700','text-slate-100'); }; if(valor===correcto){ aciertos+=1; removeBase(btn); btn.classList.add('bg-green-500','text-green-950','border-green-600'); } else { removeBase(btn); btn.classList.add('bg-red-500','text-red-950','border-red-600'); const correctoBtn=btns.find(b=>parseInt(b.textContent,10)===correcto); if(correctoBtn){ removeBase(correctoBtn); correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600'); } } actualizarScore(); if(total>=totalPreguntas){ next.disabled=true; finish.disabled=false; } else { next.disabled=false; finish.disabled=true; } }
+    function mostrarFin(){ terminado=true; const nota=Math.max(1,Math.round((aciertos/totalPreguntas)*10)); question.textContent='Has terminado el examen de '+totalPreguntas+' preguntas. Aciertos: '+aciertos+' / '+totalPreguntas+'. Nota: '+nota+' / 10'; options.innerHTML=''; next.disabled=true; finish.disabled=true; }
+    function reiniciar(){ aciertos=0; total=0; terminado=false; actualizarScore(); finish.disabled=true; renderPregunta(); }
     next.addEventListener('click',()=>renderPregunta());
     reset.addEventListener('click',()=>reiniciar());
+    finish.addEventListener('click',()=>mostrarFin());
     function setActive(btn){ [size10,size20,size30].forEach(b=>b.classList.remove('bg-indigo-600','border-indigo-700','text-white')); btn.classList.add('bg-indigo-600','border-indigo-700','text-white'); }
     size10.addEventListener('click',()=>{ totalPreguntas=10; setActive(size10); reiniciar(); });
     size20.addEventListener('click',()=>{ totalPreguntas=20; setActive(size20); reiniciar(); });

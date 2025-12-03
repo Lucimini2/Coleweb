@@ -38,6 +38,7 @@
       <div class="flex gap-2 mt-4">
         <button class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" id="next" disabled>Siguiente</button>
         <button class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700" id="reset">Reiniciar</button>
+        <button class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" id="finish" disabled>Terminar</button>
         <button class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700" id="infinite">Infinito</button>
       </div>
     </div>
@@ -53,6 +54,7 @@
     const scoreEl = document.getElementById('score');
     const nextBtn = document.getElementById('next');
     const resetBtn = document.getElementById('reset');
+    const finishBtn = document.getElementById('finish');
     const infiniteBtn = document.getElementById('infinite');
     
     const btnPractica = document.getElementById('btnPractica');
@@ -179,7 +181,7 @@
       questionEl.textContent = tabla + ' × ' + multiplicador + ' = ?';
       optionsEl.innerHTML = '';
       const opciones = generarOpciones(correcto);
-      const baseOptionClasses = 'px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70 hover:border-indigo-400 hover:bg-slate-700';
+      const baseOptionClasses = 'px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70';
       opciones.forEach(v => {
         const b = document.createElement('button');
         b.className = baseOptionClasses;
@@ -220,9 +222,11 @@
       }
       actualizarScore();
       if (vista === 'examen' && total >= examTotal) {
-        mostrarFinExam();
+        nextBtn.disabled = true;
+        finishBtn.disabled = false;
       } else {
         nextBtn.disabled = false;
+        finishBtn.disabled = true;
       }
     }
 
@@ -231,6 +235,7 @@
       questionEl.textContent = 'Has terminado la tabla del ' + tabla + '. Puntuación: ' + aciertos + ' / 10';
       optionsEl.innerHTML = '';
       nextBtn.disabled = true;
+      finishBtn.disabled = true;
     }
 
     function mostrarFinExam() {
@@ -239,6 +244,7 @@
       questionEl.textContent = 'Has terminado el examen. Aciertos: ' + aciertos + ' / ' + examTotal + '. Nota: ' + nota + ' / 10';
       optionsEl.innerHTML = '';
       nextBtn.disabled = true;
+      finishBtn.disabled = true;
     }
 
     function reiniciar(keepTabla) {
@@ -252,6 +258,7 @@
     }
 
     nextBtn.addEventListener('click', () => renderPregunta());
+    finishBtn.addEventListener('click', () => { if (vista === 'examen') { mostrarFinExam(); } else { mostrarFin(); } });
     resetBtn.addEventListener('click', () => reiniciar(true));
     infiniteBtn.addEventListener('click', () => {
       modoInfinito = !modoInfinito;
