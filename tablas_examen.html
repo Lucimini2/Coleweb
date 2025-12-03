@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Examen: Tablas de multiplicar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <header class="flex items-center gap-3 mb-4">
+      <a class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="subject.html?subject=Mates">Volver</a>
+      <h1 class="text-2xl font-semibold">Examen: Tablas de multiplicar</h1>
+    </header>
+    <div class="bg-slate-800 border border-slate-700 rounded-xl p-4">
+      <div class="flex items-center gap-2 mb-3">
+        <button id="size10" class="px-3 py-2 rounded-md border border-slate-700 bg-slate-800 text-slate-100 hover:border-indigo-400 hover:bg-slate-700">10 preguntas</button>
+        <button id="size20" class="px-3 py-2 rounded-md border border-slate-700 bg-slate-800 text-slate-100 hover:border-indigo-400 hover:bg-slate-700">20 preguntas</button>
+        <button id="size30" class="px-3 py-2 rounded-md border border-slate-700 bg-slate-800 text-slate-100 hover:border-indigo-400 hover:bg-slate-700">30 preguntas</button>
+        <div id="score" class="ml-auto text-slate-400"></div>
+      </div>
+      <div id="question" class="text-xl font-medium mb-3"></div>
+      <div id="options" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+      <div class="flex gap-2 mt-4">
+        <button id="next" class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" disabled>Siguiente</button>
+        <button id="reset" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const score = document.getElementById('score');
+    const question = document.getElementById('question');
+    const options = document.getElementById('options');
+    const next = document.getElementById('next');
+    const reset = document.getElementById('reset');
+    const size10 = document.getElementById('size10');
+    const size20 = document.getElementById('size20');
+    const size30 = document.getElementById('size30');
+    let totalPreguntas = 10;
+    let tabla = 1;
+    let multiplicador = 1;
+    let correcto = 1;
+    let aciertos = 0;
+    let total = 0;
+    let respondido = false;
+    let terminado = false;
+    function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function generarOpciones(correct){ const s=new Set([correct]); while(s.size<3){ const delta=[1,2,3,4,5][randomInt(0,4)]*(Math.random()<0.5?-1:1); const c=correct+delta; if(c>0&&c<=100) s.add(c);} return Array.from(s).sort(()=>Math.random()-0.5); }
+    function actualizarScore(){ score.textContent='Aciertos: '+aciertos+' / '+total+' · Objetivo: '+totalPreguntas; }
+    function renderPregunta(){ if(terminado) return; if(total>=totalPreguntas){ mostrarFin(); return; } tabla=randomInt(1,10); multiplicador=randomInt(1,10); correcto=tabla*multiplicador; question.textContent=tabla+' × '+multiplicador+' = ?'; options.innerHTML=''; const opts=generarOpciones(correcto); const base='px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70 hover:border-indigo-400 hover:bg-slate-700'; opts.forEach(v=>{ const b=document.createElement('button'); b.className=base; b.textContent=String(v); b.addEventListener('click',()=>seleccionar(v,b)); options.appendChild(b); }); next.disabled=true; respondido=false; }
+    function seleccionar(valor,btn){ if(respondido) return; respondido=true; total+=1; const btns=Array.from(options.querySelectorAll('button')); btns.forEach(b=>b.disabled=true); const removeBase=b=>{ b.classList.remove('bg-slate-800','border-slate-700','text-slate-100'); }; if(valor===correcto){ aciertos+=1; removeBase(btn); btn.classList.add('bg-green-500','text-green-950','border-green-600'); } else { removeBase(btn); btn.classList.add('bg-red-500','text-red-950','border-red-600'); const correctoBtn=btns.find(b=>parseInt(b.textContent,10)===correcto); if(correctoBtn){ removeBase(correctoBtn); correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600'); } } actualizarScore(); if(total>=totalPreguntas){ mostrarFin(); } else { next.disabled=false; } }
+    function mostrarFin(){ terminado=true; const nota=Math.max(1,Math.round((aciertos/totalPreguntas)*10)); question.textContent='Has terminado el examen de '+totalPreguntas+' preguntas. Aciertos: '+aciertos+' / '+totalPreguntas+'. Nota: '+nota+' / 10'; options.innerHTML=''; next.disabled=true; }
+    function reiniciar(){ aciertos=0; total=0; terminado=false; actualizarScore(); renderPregunta(); }
+    next.addEventListener('click',()=>renderPregunta());
+    reset.addEventListener('click',()=>reiniciar());
+    function setActive(btn){ [size10,size20,size30].forEach(b=>b.classList.remove('bg-indigo-600','border-indigo-700','text-white')); btn.classList.add('bg-indigo-600','border-indigo-700','text-white'); }
+    size10.addEventListener('click',()=>{ totalPreguntas=10; setActive(size10); reiniciar(); });
+    size20.addEventListener('click',()=>{ totalPreguntas=20; setActive(size20); reiniciar(); });
+    size30.addEventListener('click',()=>{ totalPreguntas=30; setActive(size30); reiniciar(); });
+    setActive(size10);
+    reiniciar();
+  </script>
+</body>
+</html>
