@@ -64,50 +64,21 @@
           span.textContent = item.description || '';
           const btns = document.createElement('div');
           btns.className = 'flex gap-2 mt-3';
-          const mkBtn = (label, mode, active) => {
+          const mkBtn = (label, href, active) => {
             const a = document.createElement('a');
-            a.href = 'tablas.html?mode=' + mode;
+            a.href = href;
             a.className = active
               ? 'bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2'
               : 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700';
             a.textContent = label;
             return a;
           };
-          const btnApuntes = document.createElement('button');
-          btnApuntes.className = 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700';
-          btnApuntes.textContent = 'Apuntes';
-          const notesPane = document.createElement('div');
-          notesPane.className = 'mt-3';
-          btnApuntes.addEventListener('click', () => {
-            const grid = document.createElement('div');
-            grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3';
-            for (let t = 1; t <= 10; t++) {
-              const cardT = document.createElement('div');
-              cardT.className = 'bg-slate-800 border border-slate-700 rounded-xl p-4';
-              const h3 = document.createElement('h3');
-              h3.className = 'text-lg mb-2';
-              h3.textContent = 'Tabla del ' + t;
-              const ul = document.createElement('ul');
-              ul.className = 'space-y-1 text-slate-300';
-              for (let i = 1; i <= 10; i++) {
-                const li = document.createElement('li');
-                li.textContent = t + ' × ' + i + ' = ' + (t * i);
-                ul.appendChild(li);
-              }
-              cardT.appendChild(h3);
-              cardT.appendChild(ul);
-              grid.appendChild(cardT);
-            }
-            notesPane.innerHTML = '';
-            notesPane.appendChild(grid);
-          });
-          btns.appendChild(btnApuntes);
-          btns.appendChild(mkBtn('Práctica', 'practica', false));
-          btns.appendChild(mkBtn('Examen', 'examen', false));
+          btns.appendChild(mkBtn('Apuntes', 'tablas_apuntes.html', false));
+          btns.appendChild(mkBtn('Práctica', 'tablas.html?mode=practica', false));
+          btns.appendChild(mkBtn('Examen', 'tablas.html?mode=examen', false));
           card.appendChild(h2);
           card.appendChild(span);
           card.appendChild(btns);
-          card.appendChild(notesPane);
           gridEl.appendChild(card);
         } else {
           const a = document.createElement('a');

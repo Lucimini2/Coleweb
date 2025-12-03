@@ -13,7 +13,7 @@
       <h1 class="text-2xl font-semibold">Tablas de multiplicar</h1>
     </header>
     <div class="flex gap-2 mb-4">
-      <button id="btnApuntes" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Apuntes</button>
+      <a href="tablas_apuntes.html" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Apuntes</a>
       <button id="btnPractica" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Práctica</button>
       <button id="btnExamen" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Examen</button>
     </div>
@@ -54,7 +54,7 @@
     const nextBtn = document.getElementById('next');
     const resetBtn = document.getElementById('reset');
     const infiniteBtn = document.getElementById('infinite');
-    const btnApuntes = document.getElementById('btnApuntes');
+    
     const btnPractica = document.getElementById('btnPractica');
     const btnExamen = document.getElementById('btnExamen');
     const notesEl = document.getElementById('notes');
@@ -146,7 +146,7 @@
       const showNotes = v === 'apuntes';
       notesEl.classList.toggle('hidden', !showNotes);
       modeLabelEl.textContent = v === 'examen' ? 'Examen' : (v === 'practica' ? 'Práctica' : 'Apuntes');
-      const panel = modeLabelEl.parentElement.parentElement; // panel container
+      const panel = modeLabelEl.parentElement; // contenedor del panel de práctica/examen
       panel.classList.toggle('hidden', showNotes);
 
       terminado = false;
@@ -261,7 +261,7 @@
         renderPregunta();
       }
     });
-    btnApuntes.addEventListener('click', () => setVista('apuntes'));
+    
     btnPractica.addEventListener('click', () => setVista('practica'));
     btnExamen.addEventListener('click', () => setVista('examen'));
 
@@ -269,7 +269,9 @@
     initTablaSelect();
     initPool();
     const mode = getParam('mode');
-    if (mode === 'apuntes' || mode === 'examen' || mode === 'practica') {
+    if (mode === 'apuntes') {
+      window.location.href = 'tablas_apuntes.html';
+    } else if (mode === 'examen' || mode === 'practica') {
       setVista(mode);
     } else {
       setVista('practica');

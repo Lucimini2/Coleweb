@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apuntes: Tablas de multiplicar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <header class="flex items-center gap-3 mb-4">
+      <a class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="subject.html?subject=Mates">Volver</a>
+      <h1 class="text-2xl font-semibold">Apuntes: Tablas de multiplicar</h1>
+    </header>
+    <p class="text-slate-400 mb-4">Tablas del 1 al 10. Cada tarjeta muestra los resultados de ×1 a ×10.</p>
+    <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+  <script>
+    const colors = [
+      'bg-rose-100 text-slate-900',
+      'bg-pink-100 text-slate-900',
+      'bg-fuchsia-100 text-slate-900',
+      'bg-purple-100 text-slate-900',
+      'bg-indigo-100 text-slate-900',
+      'bg-blue-100 text-slate-900',
+      'bg-sky-100 text-slate-900',
+      'bg-cyan-100 text-slate-900',
+      'bg-teal-100 text-slate-900',
+      'bg-emerald-100 text-slate-900'
+    ];
+    const grid = document.getElementById('grid');
+    for (let t = 1; t <= 10; t++) {
+      const card = document.createElement('div');
+      card.className = colors[(t-1) % colors.length] + ' rounded-xl p-4 border border-slate-300';
+      const h = document.createElement('h2');
+      h.className = 'text-lg font-semibold mb-2';
+      h.textContent = 'Tabla del ' + t;
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-1';
+      for (let i = 1; i <= 10; i++) {
+        const li = document.createElement('li');
+        li.textContent = t + ' × ' + i + ' = ' + (t * i);
+        ul.appendChild(li);
+      }
+      card.appendChild(h);
+      card.appendChild(ul);
+      grid.appendChild(card);
+    }
+  </script>
+</body>
+</html>
