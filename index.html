@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estudio de Asignaturas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preload" href="tablas.html" as="document">
+</head>
+<body class="bg-slate-900 text-slate-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-semibold mb-4">Estudio de Asignaturas</h1>
+    <p class="text-slate-400 mb-6">Elige una asignatura para abrir su página de recursos.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="grid"></div>
+  </div>
+  <script>
+    const gridEl = document.getElementById('grid');
+    let data = {};
+
+    function renderSubjectsAsCards() {
+      gridEl.innerHTML = '';
+      Object.keys(data).forEach(name => {
+        const a = document.createElement('a');
+        a.className = 'block bg-slate-800 border border-slate-700 rounded-xl p-4 transition duration-150 hover:-translate-y-1 hover:border-indigo-400 hover:bg-slate-700';
+        a.href = 'subject.html?subject=' + encodeURIComponent(name);
+        const h2 = document.createElement('h2');
+        h2.className = 'text-lg mb-2';
+        h2.textContent = name;
+        const span = document.createElement('span');
+        span.className = 'text-sm text-slate-400';
+        const count = (data[name] || []).length;
+        span.textContent = count ? (count + ' recurso' + (count > 1 ? 's' : '')) : 'Sin recursos aún';
+        a.appendChild(h2);
+        a.appendChild(span);
+        gridEl.appendChild(a);
+      });
+    }
+
+    async function init() {
+      try {
+        const res = await fetch('subjects.json');
+        data = await res.json();
+      } catch (e) {
+        data = {
+          'Mates': [
+            { title: 'Tablas de multiplicar', description: 'Del 1 al 10 con respuestas múltiples', href: 'tablas.html' }
+          ],
+          'Lengua': [],
+          'Inglés': [],
+          'Francés': [],
+          'Biologia': [],
+          'Historia': []
+        };
+      }
+      renderSubjectsAsCards();
+    }
+    init();
+  </script>
+</body>
+</html>

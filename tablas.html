@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tablas de multiplicar 1–10</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <header class="flex items-center gap-3 mb-4">
+      <a class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="subject.html?subject=Mates">Volver</a>
+      <h1 class="text-2xl font-semibold">Tablas de multiplicar</h1>
+    </header>
+    <div class="flex gap-2 mb-4">
+      <button id="btnApuntes" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Apuntes</button>
+      <button id="btnPractica" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Práctica</button>
+      <button id="btnExamen" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Examen</button>
+    </div>
+    <div id="notes" class="bg-slate-800 border border-slate-700 rounded-xl p-4 hidden">
+      <h2 class="text-lg mb-2">Apuntes de multiplicación</h2>
+      <ul class="list-disc pl-5 text-slate-300 space-y-1">
+        <li>La multiplicación es suma repetida: a × b = a sumado b veces.</li>
+        <li>Propiedad conmutativa: a × b = b × a.</li>
+        <li>Multiplicar por 0 da 0; por 1 mantiene el número.</li>
+        <li>Aprende patrones: por 5 termina en 0 o 5; por 9 la suma de cifras es 9.</li>
+      </ul>
+    </div>
+    <div class="bg-slate-800 border border-slate-700 rounded-xl p-4">
+      <div id="modeLabel" class="text-slate-400 mb-2">Práctica</div>
+      <div class="flex flex-wrap items-center gap-3 mb-3">
+        <label for="tablaSelect">Tabla:</label>
+        <select id="tablaSelect" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-md px-3 py-2"></select>
+        <div class="ml-auto text-slate-400" id="score">Aciertos: 0 / 0</div>
+      </div>
+      <div class="text-xl font-medium mb-3" id="question"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="options"></div>
+      <div class="flex gap-2 mt-4">
+        <button class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" id="next" disabled>Siguiente</button>
+        <button class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700" id="reset">Reiniciar</button>
+        <button class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700" id="infinite">Infinito</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name) || '';
+    }
+    const tablaSelect = document.getElementById('tablaSelect');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const scoreEl = document.getElementById('score');
+    const nextBtn = document.getElementById('next');
+    const resetBtn = document.getElementById('reset');
+    const infiniteBtn = document.getElementById('infinite');
+    const btnApuntes = document.getElementById('btnApuntes');
+    const btnPractica = document.getElementById('btnPractica');
+    const btnExamen = document.getElementById('btnExamen');
+    const notesEl = document.getElementById('notes');
+    const modeLabelEl = document.getElementById('modeLabel');
+
+    let tabla = 1;
+    let multiplicador = 1;
+    let correcto = 1;
+    let aciertos = 0;
+    let total = 0;
+    let respondido = false;
+    let modoInfinito = false;
+    let pool = [];
+    let terminado = false;
+    let vista = 'practica';
+    let examTotal = 20;
+
+    function initTablaSelect() {
+      for (let i = 1; i <= 10; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = 'Tabla del ' + i;
+        tablaSelect.appendChild(opt);
+      }
+      tablaSelect.value = '1';
+      tablaSelect.addEventListener('change', () => {
+        tabla = parseInt(tablaSelect.value, 10);
+        reiniciar(true);
+      });
+    }
+
+    function actualizarScore() {
+      scoreEl.textContent = 'Aciertos: ' + aciertos + ' / ' + total;
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generarOpciones(correct) {
+      const set = new Set([correct]);
+      while (set.size < 3) {
+        const delta = [1, 2, 3, 4, 5][randomInt(0, 4)] * (Math.random() < 0.5 ? -1 : 1);
+        const candidate = correct + delta;
+        if (candidate > 0 && candidate <= 100) set.add(candidate);
+      }
+      return Array.from(set).sort(() => Math.random() - 0.5);
+    }
+
+    function initPool() {
+      pool = Array.from({ length: 10 }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+    }
+
+    function renderApuntes() {
+      const grid = document.createElement('div');
+      grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3';
+      for (let t = 1; t <= 10; t++) {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-800 border border-slate-700 rounded-xl p-4';
+        const h = document.createElement('h3');
+        h.className = 'text-lg mb-2';
+        h.textContent = 'Tabla del ' + t;
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-1 text-slate-300';
+        for (let i = 1; i <= 10; i++) {
+          const li = document.createElement('li');
+          li.textContent = t + ' × ' + i + ' = ' + (t * i);
+          ul.appendChild(li);
+        }
+        card.appendChild(h);
+        card.appendChild(ul);
+        grid.appendChild(card);
+      }
+      notesEl.innerHTML = '';
+      const title = document.createElement('h2');
+      title.className = 'text-lg mb-2';
+      title.textContent = 'Apuntes de multiplicación';
+      notesEl.appendChild(title);
+      notesEl.appendChild(grid);
+    }
+
+    function setVista(v) {
+      vista = v;
+      btnApuntes.className = 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700';
+      btnPractica.className = 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700';
+      btnExamen.className = 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700';
+      
+
+      const showNotes = v === 'apuntes';
+      notesEl.classList.toggle('hidden', !showNotes);
+      modeLabelEl.textContent = v === 'examen' ? 'Examen' : (v === 'practica' ? 'Práctica' : 'Apuntes');
+      const panel = modeLabelEl.parentElement.parentElement; // panel container
+      panel.classList.toggle('hidden', showNotes);
+
+      terminado = false;
+      aciertos = 0;
+      total = 0;
+      actualizarScore();
+      if (showNotes) { renderApuntes(); return; }
+      tablaSelect.disabled = v === 'examen';
+      tablaSelect.classList.toggle('opacity-60', v === 'examen');
+      tablaSelect.classList.toggle('pointer-events-none', v === 'examen');
+      modoInfinito = v === 'practica' ? modoInfinito : false;
+      infiniteBtn.classList.toggle('hidden', v === 'examen');
+      initPool();
+      renderPregunta();
+    }
+
+    function renderPregunta() {
+      if (terminado) return;
+      if (vista === 'examen') {
+        if (total >= examTotal) { mostrarFinExam(); return; }
+        tabla = randomInt(1, 10);
+        multiplicador = randomInt(1, 10);
+      } else if (modoInfinito) {
+        multiplicador = randomInt(1, 10);
+      } else {
+        if (pool.length === 0) { mostrarFin(); return; }
+        multiplicador = pool.pop();
+      }
+      correcto = tabla * multiplicador;
+      questionEl.textContent = tabla + ' × ' + multiplicador + ' = ?';
+      optionsEl.innerHTML = '';
+      const opciones = generarOpciones(correcto);
+      const baseOptionClasses = 'px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70 hover:border-indigo-400 hover:bg-slate-700';
+      opciones.forEach(v => {
+        const b = document.createElement('button');
+        b.className = baseOptionClasses;
+        b.textContent = String(v);
+        b.addEventListener('click', () => seleccionar(v, b));
+        optionsEl.appendChild(b);
+      });
+      nextBtn.disabled = true;
+      respondido = false;
+    }
+
+    function bloquearOpciones() {
+      const btns = optionsEl.querySelectorAll('button');
+      btns.forEach(b => b.disabled = true);
+    }
+
+    function seleccionar(valor, btn) {
+      if (respondido) return;
+      respondido = true;
+      total += 1;
+      const btns = Array.from(optionsEl.querySelectorAll('button'));
+      btns.forEach(b => b.disabled = true);
+      const removeBase = b => {
+        b.classList.remove('bg-slate-800','border-slate-700','text-slate-100');
+      };
+      if (valor === correcto) {
+        aciertos += 1;
+        removeBase(btn);
+        btn.classList.add('bg-green-500','text-green-950','border-green-600');
+      } else {
+        removeBase(btn);
+        btn.classList.add('bg-red-500','text-red-950','border-red-600');
+        const correctoBtn = btns.find(b => parseInt(b.textContent, 10) === correcto);
+        if (correctoBtn) {
+          removeBase(correctoBtn);
+          correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600');
+        }
+      }
+      actualizarScore();
+      if (vista === 'examen' && total >= examTotal) {
+        mostrarFinExam();
+      } else {
+        nextBtn.disabled = false;
+      }
+    }
+
+    function mostrarFin() {
+      terminado = true;
+      questionEl.textContent = 'Has terminado la tabla del ' + tabla + '. Puntuación: ' + aciertos + ' / 10';
+      optionsEl.innerHTML = '';
+      nextBtn.disabled = true;
+    }
+
+    function mostrarFinExam() {
+      terminado = true;
+      const nota = Math.max(1, Math.round((aciertos / examTotal) * 10));
+      questionEl.textContent = 'Has terminado el examen. Aciertos: ' + aciertos + ' / ' + examTotal + '. Nota: ' + nota + ' / 10';
+      optionsEl.innerHTML = '';
+      nextBtn.disabled = true;
+    }
+
+    function reiniciar(keepTabla) {
+      aciertos = 0;
+      total = 0;
+      actualizarScore();
+      if (!keepTabla) tablaSelect.value = String(tabla);
+      terminado = false;
+      initPool();
+      renderPregunta();
+    }
+
+    nextBtn.addEventListener('click', () => renderPregunta());
+    resetBtn.addEventListener('click', () => reiniciar(true));
+    infiniteBtn.addEventListener('click', () => {
+      modoInfinito = !modoInfinito;
+      infiniteBtn.textContent = modoInfinito ? 'Infinito: activado' : 'Infinito';
+      if (terminado && modoInfinito) {
+        terminado = false;
+        renderPregunta();
+      }
+    });
+    btnApuntes.addEventListener('click', () => setVista('apuntes'));
+    btnPractica.addEventListener('click', () => setVista('practica'));
+    btnExamen.addEventListener('click', () => setVista('examen'));
+
+    tabla = 1;
+    initTablaSelect();
+    initPool();
+    const mode = getParam('mode');
+    if (mode === 'apuntes' || mode === 'examen' || mode === 'practica') {
+      setVista(mode);
+    } else {
+      setVista('practica');
+    }
+  </script>
+</body>
+</html>
