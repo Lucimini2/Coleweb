@@ -1,39 +1,18 @@
 <!doctype html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>COLEWEB</title>
+  <title>Asignaturas</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preload" href="tablas.html" as="document">
 </head>
 <body class="bg-slate-900 text-slate-100">
   <div class="max-w-6xl mx-auto p-6">
-    <div class="flex flex-col gap-4 mb-2">
-      <div class="text-center">
-        <div class="text-sm tracking-wide text-slate-400">ESTUDIA Y APRUEBA</div>
-        <h1 class="text-5xl sm:text-6xl font-extrabold">COLEWEB</h1>
-      </div>
-      <div class="bg-slate-800 ring-1 ring-slate-700 rounded-3xl overflow-hidden relative h-[64vh] sm:h-[66vh]">
-        <img id="hero" src="assets/hero.gif" alt="Estudia y aprueba" class="w-full h-full object-cover">
-        <a href="asignaturas.html" class="absolute left-1/2 -translate-x-1/2 bottom-3 bg-slate-100 text-slate-900 rounded-full px-7 py-3 text-base shadow">A Estudiar!!</a>
-      </div>
-    </div>
-    
+    <h2 class="text-xl font-semibold mb-2 text-center">ELIGE LA ASIGNATURA</h2>
+    <p class="text-slate-400 mb-4 text-center">Elige tu asignatura y lánzate: aprende, practica y ¡aprueba!</p>
+    <div id="subjects" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
   </div>
-    <script>
-    // Fallback de imagen del hero: intenta .gif, luego .png y finalmente un SVG embebido
-    (function(){
-      const hero = document.getElementById('hero');
-      if (!hero) return;
-      const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#1f2937"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-size="42" fill="#cbd5e1">Imagen no encontrada</text></svg>';
-      const fallbackSvg = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
-      hero.addEventListener('error', function tryPng(){
-        hero.removeEventListener('error', tryPng);
-        hero.src = 'assets/hero.png';
-        hero.onerror = function(){ hero.src = fallbackSvg; };
-      });
-    })();
+  <script>
     const gridEl = document.getElementById('subjects');
     let data = {};
 
