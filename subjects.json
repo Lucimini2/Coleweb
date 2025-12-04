@@ -7,9 +7,18 @@
     }
   ],
   "Lengua": [],
+  "Lengua": [
+    {
+      "title": "U2: Aprender para la vida",
+      "description": "Unidad 2: Apuntes y práctica",
+      "notes_href": "lengua_u2_apuntes.html",
+      "practice_href": "lengua_u2_practica.html"
+    }
+  ],
   "Inglés": [],
   "Francés": [],
   "Biologia": [],
   "Historia": [],
-  "Plástica": []
+  "Plástica": [],
+  "Ed. Física": []
 }

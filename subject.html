@@ -80,6 +80,35 @@
           card.appendChild(span);
           card.appendChild(btns);
           gridEl.appendChild(card);
+        } else if (item.notes_href || item.practice_href) {
+          const card = document.createElement('div');
+          card.className = 'bg-slate-800 border border-slate-700 rounded-xl p-4';
+          const h2 = document.createElement('h2');
+          h2.className = 'text-lg mb-2';
+          h2.textContent = item.title;
+          const span = document.createElement('span');
+          span.className = 'text-sm text-slate-400';
+          span.textContent = item.description || '';
+          const btns = document.createElement('div');
+          btns.className = 'flex gap-2 mt-3';
+          if (item.notes_href) {
+            const a = document.createElement('a');
+            a.href = item.notes_href;
+            a.className = 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700';
+            a.textContent = 'Apuntes';
+            btns.appendChild(a);
+          }
+          if (item.practice_href) {
+            const a = document.createElement('a');
+            a.href = item.practice_href;
+            a.className = 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700';
+            a.textContent = 'Práctica';
+            btns.appendChild(a);
+          }
+          card.appendChild(h2);
+          card.appendChild(span);
+          card.appendChild(btns);
+          gridEl.appendChild(card);
         } else {
           const a = document.createElement('a');
           a.className = 'block bg-slate-800 border border-slate-700 rounded-xl p-4 transition duration-150 hover:-translate-y-1 hover:border-indigo-400 hover:bg-slate-700';

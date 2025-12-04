@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lengua · U2: Aprender para la vida · Práctica</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <header class="flex items-center gap-3 mb-4">
+      <a class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="subject.html?subject=Lengua">Volver</a>
+      <h1 class="text-2xl font-semibold">U2: Aprender para la vida · Práctica</h1>
+    </header>
+    <div class="bg-slate-800 border border-slate-700 rounded-xl p-4">
+      <div class="text-slate-400 mb-3" id="score">Aciertos: 0 / 0</div>
+      <div class="text-xl font-medium mb-3" id="question"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="options"></div>
+      <div class="flex gap-2 mt-4">
+        <button id="next" class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" disabled>Siguiente</button>
+        <button id="reset" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const score = document.getElementById('score');
+    const question = document.getElementById('question');
+    const options = document.getElementById('options');
+    const next = document.getElementById('next');
+    const reset = document.getElementById('reset');
+    let aciertos = 0; let total = 0; let respondido = false;
+    const preguntas = [
+      { q: '¿Cuál es la idea principal de un texto?', opts: ['La frase más larga','El tema central que resume el texto','Una opinión secundaria'], correct: 1 },
+      { q: '¿Qué es un resumen?', opts: ['Copiar el texto completo','Repetir palabras difíciles','Sintetizar la información con tus palabras'], correct: 2 },
+      { q: '¿Qué significa “contexto” en vocabulario?', opts: ['Uso de la palabra en una oración','La definición del diccionario','El número de sílabas'], correct: 0 }
+    ];
+    let idx = 0;
+    function actualizarScore(){ score.textContent = 'Aciertos: ' + aciertos + ' / ' + total; }
+    function render(){ const p = preguntas[idx]; question.textContent = p.q; options.innerHTML=''; p.opts.forEach((t,i)=>{ const b=document.createElement('button'); b.className='px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70'; b.textContent=t; b.addEventListener('click',()=>seleccionar(i,b,p.correct)); options.appendChild(b); }); next.disabled=true; respondido=false; }
+    function seleccionar(i,btn,correct){ if(respondido) return; respondido=true; total+=1; const btns=Array.from(options.querySelectorAll('button')); btns.forEach(b=>b.disabled=true); const removeBase=b=>{ b.classList.remove('bg-slate-800','border-slate-700','text-slate-100'); }; if(i===correct){ aciertos+=1; removeBase(btn); btn.classList.add('bg-green-500','text-green-950','border-green-600'); } else { removeBase(btn); btn.classList.add('bg-red-500','text-red-950','border-red-600'); const correctoBtn=btns[correct]; if(correctoBtn){ removeBase(correctoBtn); correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600'); } } actualizarScore(); next.disabled=false; }
+    next.addEventListener('click',()=>{ idx=(idx+1)%preguntas.length; render(); });
+    reset.addEventListener('click',()=>{ aciertos=0; total=0; idx=0; actualizarScore(); render(); });
+    actualizarScore(); render();
+  </script>
+</body>
+</html>
