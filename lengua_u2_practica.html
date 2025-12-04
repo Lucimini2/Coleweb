@@ -16,9 +16,11 @@
       <div class="text-slate-400 mb-3" id="score">Aciertos: 0 / 0</div>
       <div class="text-xl font-medium mb-3" id="question"></div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="options"></div>
-      <div class="flex gap-2 mt-4">
+      <div class="flex items-center gap-2 mt-4">
         <button id="next" class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" disabled>Siguiente</button>
         <button id="reset" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Reiniciar</button>
+        <button id="infinite" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Infinito</button>
+        <span id="infStatus" class="text-slate-400"></span>
       </div>
     </div>
   </div>
@@ -28,17 +30,38 @@
     const options = document.getElementById('options');
     const next = document.getElementById('next');
     const reset = document.getElementById('reset');
-    let aciertos = 0; let total = 0; let respondido = false;
+    const infBtn = document.getElementById('infinite');
+    const infStatus = document.getElementById('infStatus');
+    let aciertos = 0; let total = 0; let respondido = false; let infinito = false;
     const preguntas = [
-      { q: '¿Cuál es la idea principal de un texto?', opts: ['La frase más larga','El tema central que resume el texto','Una opinión secundaria'], correct: 1 },
-      { q: '¿Qué es un resumen?', opts: ['Copiar el texto completo','Repetir palabras difíciles','Sintetizar la información con tus palabras'], correct: 2 },
-      { q: '¿Qué significa “contexto” en vocabulario?', opts: ['Uso de la palabra en una oración','La definición del diccionario','El número de sílabas'], correct: 0 }
+      { q: 'Narrar consiste en...', opts: ['contar hechos reales o ficticios','describir paisajes','dialogar sin narrador'], correct: 0 },
+      { q: 'El narrador es...', opts: ['la voz que cuenta la historia','el personaje principal','el autor del libro'], correct: 0 },
+      { q: 'El lugar y el tiempo componen...', opts: ['el marco de los hechos','el argumento','los personajes'], correct: 0 },
+      { q: 'Los personajes son...', opts: ['los individuos que realizan acciones','los objetos del escenario','los títulos de los capítulos'], correct: 0 },
+      { q: 'Los hechos y las acciones representan...', opts: ['todo lo que sucede (argumento)','las descripciones del paisaje','las opiniones del narrador'], correct: 0 },
+      { q: 'La comunicación no verbal es...', opts: ['emitir información sin signos lingüísticos','hablar solo con palabras escritas','leer en voz alta'], correct: 0 },
+      { q: 'Elemento de comunicación no verbal:', opts: ['tono, volumen y timbre de la voz','la ortografía de las palabras','el tamaño de la página'], correct: 0 },
+      { q: 'Elemento: gestos, expresiones faciales y...', opts: ['postura','rima','signos de puntuación'], correct: 0 },
+      { q: 'Elemento: distancia y...', opts: ['contacto','sinónimos','conectores'], correct: 0 },
+      { q: 'Función que enfatiza el mensaje verbal:', opts: ['complementar','sustituir','regular'], correct: 0 },
+      { q: 'Función que transmite sin palabras:', opts: ['sustituir','complementar','regular'], correct: 0 },
+      { q: 'Función que organiza el intercambio:', opts: ['regular','sustituir','complementar'], correct: 0 },
+      { q: 'Lengua oficial de España:', opts: ['castellano o español','catalán','euskera'], correct: 0 },
+      { q: 'En algunas comunidades hay...', opts: ['lenguas cooficiales','solo castellano','ninguna lengua propia'], correct: 0 },
+      { q: 'La coherencia es...', opts: ['propiedad que hace que el texto tenga sentido','lista de conectores','uso correcto de tildes'], correct: 0 },
+      { q: 'Actividad propia de la coherencia:', opts: ['identificar ideas principales y secundarias','contar sílabas','subrayar vocales'], correct: 0 },
+      { q: 'La cohesión es...', opts: ['relación de enunciados mediante mecanismos lingüísticos','opinión del narrador','número de párrafos'], correct: 0 },
+      { q: 'Mecanismo que evita repetir una palabra:', opts: ['elipsis','repetición','opinión'], correct: 0 },
+      { q: '¿Qué es una epopeya?', opts: ['narración extensa en verso de hazañas de un héroe','relato brevísimo con desenlace sorprendente','narración breve con moraleja y animales'], correct: 0 },
+      { q: '¿Qué es una fábula?', opts: ['narración breve que transmite moraleja (animales)','novela extensa en prosa','cuento popular oral sin autor conocido'], correct: 0 }
     ];
     let idx = 0;
     function actualizarScore(){ score.textContent = 'Aciertos: ' + aciertos + ' / ' + total; }
-    function render(){ const p = preguntas[idx]; question.textContent = p.q; options.innerHTML=''; p.opts.forEach((t,i)=>{ const b=document.createElement('button'); b.className='px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70'; b.textContent=t; b.addEventListener('click',()=>seleccionar(i,b,p.correct)); options.appendChild(b); }); next.disabled=true; respondido=false; }
-    function seleccionar(i,btn,correct){ if(respondido) return; respondido=true; total+=1; const btns=Array.from(options.querySelectorAll('button')); btns.forEach(b=>b.disabled=true); const removeBase=b=>{ b.classList.remove('bg-slate-800','border-slate-700','text-slate-100'); }; if(i===correct){ aciertos+=1; removeBase(btn); btn.classList.add('bg-green-500','text-green-950','border-green-600'); } else { removeBase(btn); btn.classList.add('bg-red-500','text-red-950','border-red-600'); const correctoBtn=btns[correct]; if(correctoBtn){ removeBase(correctoBtn); correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600'); } } actualizarScore(); next.disabled=false; }
-    next.addEventListener('click',()=>{ idx=(idx+1)%preguntas.length; render(); });
+    function render(){ const p = preguntas[idx]; question.textContent = p.q; options.innerHTML=''; const order=[0,1,2].sort(()=>Math.random()-0.5); order.forEach(j=>{ const b=document.createElement('button'); b.className='px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70'; b.textContent=p.opts[j]; b.dataset.correct = (j===p.correct) ? '1' : '0'; b.addEventListener('click',()=>seleccionar(b, b.dataset.correct==='1')); options.appendChild(b); }); next.disabled=true; respondido=false; syncInfinitoUI(); }
+    function seleccionar(btn,isCorrect){ if(respondido) return; respondido=true; total+=1; const btns=Array.from(options.querySelectorAll('button')); btns.forEach(b=>b.disabled=true); const removeBase=b=>{ b.classList.remove('bg-slate-800','border-slate-700','text-slate-100'); }; if(isCorrect){ aciertos+=1; removeBase(btn); btn.classList.add('bg-green-500','text-green-950','border-green-600'); } else { removeBase(btn); btn.classList.add('bg-red-500','text-red-950','border-red-600'); const correctoBtn=options.querySelector('button[data-correct="1"]'); if(correctoBtn){ removeBase(correctoBtn); correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600'); } } actualizarScore(); next.disabled=false; }
+    next.addEventListener('click',()=>{ if(idx < preguntas.length - 1){ idx += 1; render(); } else { if(infinito){ idx = 0; render(); } else { question.textContent = 'Has terminado'; options.innerHTML = ''; next.disabled = true; } } });
+    infBtn.addEventListener('click',()=>{ infinito = !infinito; syncInfinitoUI(); });
+    function syncInfinitoUI(){ infStatus.textContent = infinito ? 'activado' : ''; infBtn.className = infinito ? 'bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2' : 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700'; }
     reset.addEventListener('click',()=>{ aciertos=0; total=0; idx=0; actualizarScore(); render(); });
     actualizarScore(); render();
   </script>
