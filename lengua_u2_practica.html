@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Lengua · U2 · Práctica: preguntas tipo test con puntuación -->
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -9,7 +10,7 @@
 <body class="bg-slate-900 text-slate-100">
   <div class="max-w-5xl mx-auto p-6">
     <header class="flex items-center gap-3 mb-4">
-      <a class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="subject.html?subject=Lengua">Volver</a>
+      <a id="backLink" class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="asignaturas.html">Volver</a>
       <h1 class="text-2xl font-semibold">U2: Aprender para la vida · Práctica</h1>
     </header>
     <div class="bg-slate-800 border border-slate-700 rounded-xl p-4">
@@ -64,6 +65,22 @@
     function syncInfinitoUI(){ infStatus.textContent = infinito ? 'activado' : ''; infBtn.className = infinito ? 'bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2' : 'bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700'; }
     reset.addEventListener('click',()=>{ aciertos=0; total=0; idx=0; actualizarScore(); render(); });
     actualizarScore(); render();
+  </script>
+  <!-- Redirección del botón Atrás del navegador hacia asignaturas.html -->
+  <script>
+    (function(){
+      try {
+        history.pushState({cw:1}, '', window.location.href);
+        window.addEventListener('popstate', function(){ location.href = new URL('asignaturas.html', window.location.href).href; });
+        var back = document.getElementById('backLink');
+        if (back) {
+          back.addEventListener('click', function(e){
+            e.preventDefault();
+            location.href = new URL('asignaturas.html', window.location.href).href;
+          });
+        }
+      } catch(e){}
+    })();
   </script>
 </body>
 </html>

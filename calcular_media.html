@@ -1,0 +1,78 @@
+<!doctype html>
+<!-- Calcular Media: introduce calificaciones, calcula la media y permite volver -->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calcular Media</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <header class="flex items-center gap-3 mb-4">
+      <a id="backLink" class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="asignaturas.html">Volver</a>
+      <h1 class="text-2xl font-semibold">Calcular la media</h1>
+    </header>
+    <div class="bg-slate-800 border border-slate-700 rounded-xl p-4">
+      <p class="text-slate-400 mb-3">Introduce tus calificaciones (0–10). Las vacías se ignoran.</p>
+      <div id="inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3"></div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="add" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700 inline-flex items-center gap-2"><span>🧮</span><span>Añadir nota</span></button>
+        <button id="calc" class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2">Calcular</button>
+        <button id="reset" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Reiniciar</button>
+        <div id="result" class="text-slate-300 ml-auto"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const inputsEl = document.getElementById('inputs');
+    const addBtn = document.getElementById('add');
+    const calcBtn = document.getElementById('calc');
+    const resetBtn = document.getElementById('reset');
+    const resultEl = document.getElementById('result');
+    function addInput(value) {
+      const wrap = document.createElement('div');
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.min = '0';
+      input.max = '10';
+      input.step = '0.01';
+      input.placeholder = 'Ej.: 7.5';
+      input.className = 'w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-md px-3 py-2';
+      if (typeof value === 'number') input.value = String(value);
+      wrap.appendChild(input);
+      inputsEl.appendChild(wrap);
+    }
+    function initInputs() {
+      inputsEl.innerHTML = '';
+      for (let i = 0; i < 4; i++) addInput();
+    }
+    function calcMedia() {
+      const vals = Array.from(inputsEl.querySelectorAll('input')).map(i => parseFloat(i.value)).filter(v => !isNaN(v) && v >= 0 && v <= 10);
+      if (!vals.length) { resultEl.textContent = 'Sin notas válidas'; return; }
+      const sum = vals.reduce((a,b) => a + b, 0);
+      const avg = sum / vals.length;
+      resultEl.textContent = 'Media: ' + avg.toFixed(2) + ' (' + vals.length + ' notas)';
+    }
+    addBtn.addEventListener('click', () => addInput());
+    calcBtn.addEventListener('click', () => calcMedia());
+    resetBtn.addEventListener('click', () => { initInputs(); resultEl.textContent = ''; });
+    initInputs();
+  </script>
+  <script>
+    (function(){
+      try {
+        history.pushState({cw:1}, '', window.location.href);
+        window.addEventListener('popstate', function(){ location.href = new URL('asignaturas.html', window.location.href).href; });
+        var back = document.getElementById('backLink');
+        if (back) {
+          back.addEventListener('click', function(e){
+            e.preventDefault();
+            location.href = new URL('asignaturas.html', window.location.href).href;
+          });
+        }
+      } catch(e){}
+    })();
+  </script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Página ELIGE LA ASIGNATURA: carga subjects.json y muestra tarjetas -->
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -33,6 +34,18 @@
         a.appendChild(span);
         gridEl.appendChild(a);
       });
+      const aMedia = document.createElement('a');
+      aMedia.className = 'block bg-slate-800 border border-teal-600 rounded-xl p-4 transition duration-150 hover:-translate-y-1 hover:border-teal-400 hover:bg-slate-700';
+      aMedia.href = 'calcular_media.html';
+      const h2m = document.createElement('h2');
+      h2m.className = 'text-lg mb-2 text-teal-300';
+      h2m.textContent = 'Calcular Media';
+      const spanm = document.createElement('span');
+      spanm.className = 'text-sm text-slate-400';
+      spanm.textContent = 'Calcula la media de tus calificaciones.';
+      aMedia.appendChild(h2m);
+      aMedia.appendChild(spanm);
+      gridEl.appendChild(aMedia);
     }
 
     async function init() {
