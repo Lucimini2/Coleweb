@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inglés · Verbos Irregulares · Examen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+  <div class="max-w-5xl mx-auto p-6">
+    <header class="flex items-center gap-3 mb-4">
+      <a id="backLink" class="text-slate-300 border border-slate-700 bg-slate-800 rounded-md px-3 py-2 hover:border-indigo-400" href="subject.html?subject=Inglés">Volver</a>
+      <h1 class="text-2xl font-semibold">Verbos Irregulares · Examen</h1>
+    </header>
+    <div id="mcq" class="bg-slate-800 border border-slate-700 rounded-xl p-4" style="display:none">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <button id="size10" class="px-3 py-2 rounded-md border border-slate-700 bg-slate-800 text-slate-100 hover:border-indigo-400 hover:bg-slate-700 w-full sm:w-auto">10 preguntas</button>
+        <button id="size20" class="px-3 py-2 rounded-md border border-slate-700 bg-slate-800 text-slate-100 hover:border-indigo-400 hover:bg-slate-700 w-full sm:w-auto">20 preguntas</button>
+        <div id="score" class="text-slate-400 w-full sm:w-auto ml-0 sm:ml-auto text-right text-sm sm:text-base"></div>
+      </div>
+      <div id="question" class="text-xl font-medium mb-3"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="options"></div>
+      <div class="flex gap-2 mt-4">
+        <button id="next" class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" disabled>Siguiente</button>
+        <button id="reset" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Reiniciar</button>
+        <button id="finish" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 disabled:opacity-60 disabled:cursor-not-allowed" disabled>Terminar</button>
+      </div>
+    </div>
+    <div id="fillin" class="bg-slate-800 border border-slate-700 rounded-xl p-4">
+      <div class="text-slate-400 mb-3" id="scoreFill">Aciertos: 0 / 0</div>
+      <div class="mb-3">
+        <div class="text-sm text-slate-400">Base form</div>
+        <div id="baseFill" class="text-xl font-medium"></div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        <div>
+          <label class="text-sm text-slate-400">Past simple</label>
+          <input id="pastFill" class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-md px-3 py-2" placeholder="ej. went">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400">-ed form</label>
+          <input id="partFill" class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-md px-3 py-2" placeholder="ej. gone">
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button id="checkFill" class="bg-indigo-600 border border-indigo-700 text-white rounded-lg px-4 py-2">Corregir</button>
+        <button id="nextFill" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Siguiente</button>
+        <button id="resetFill" class="bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-4 py-2 hover:border-indigo-400 hover:bg-slate-700">Reiniciar</button>
+      </div>
+      <div id="feedbackFill" class="mt-3 text-slate-300"></div>
+    </div>
+  </div>
+  <script>
+    const verbs = [
+      ['be','was/were','been'],['beat','beat','beaten'],['become','became','become'],['begin','began','begun'],['bend','bent','bent'],['bet','bet','bet'],['bite','bit','bitten'],['bleed','bled','bled'],['blow','blew','blown'],['break','broke','broken'],['breed','bred','bred'],['bring','brought','brought'],['build','built','built'],['burn','burnt/burned','burnt/burned'],['buy','bought','bought'],['catch','caught','caught'],['choose','chose','chosen'],['come','came','come'],['cost','cost','cost'],['cut','cut','cut'],['do','did','done'],['dig','dug','dug'],['draw','drew','drawn'],['dream','dreamt/dreamed','dreamt/dreamed'],['drink','drank','drunk'],['drive','drove','driven'],['eat','ate','eaten'],['fall','fell','fallen'],['feed','fed','fed'],['feel','felt','felt'],['fight','fought','fought'],['find','found','found'],['fly','flew','flown'],['forget','forgot','forgotten'],['forgive','forgave','forgiven'],['freeze','froze','frozen'],['get','got','got'],['give','gave','given'],['go','went','gone'],['grow','grew','grown'],['have','had','had'],['hear','heard','heard'],['hide','hid','hidden'],['hit','hit','hit'],['hold','held','held'],['hurt','hurt','hurt'],['keep','kept','kept'],['know','knew','known'],['lay','laid','laid'],['lead','led','led'],['lean','leant/leaned','leant/leaned'],['leave','left','left'],['lend','lent','lent'],['let','let','let'],['lose','lost','lost'],['make','made','made'],['mean','meant','meant'],['meet','met','met'],['pay','paid','paid'],['put','put','put'],['quit','quit','quit'],['read','read','read'],['ride','rode','ridden'],['ring','rang','rung'],['rise','rose','risen'],['run','ran','run'],['say','said','said'],['see','saw','seen'],['sell','sold','sold'],['send','sent','sent'],['set','set','set'],['shake','shook','shaken'],['shine','shone','shone'],['shoe','shod','shod'],['shoot','shot','shot'],['show','showed','shown'],['shrink','shrank','shrunk'],['shut','shut','shut'],['sing','sang','sung'],['sink','sank','sunk'],['sit','sat','sat'],['sleep','slept','slept'],['speak','spoke','spoken'],['spend','spent','spent'],['spill','spilt/spilled','spilt/spilled'],['spread','spread','spread'],['speed','sped','sped'],['stand','stood','stood'],['steal','stole','stolen'],['stick','stuck','stuck'],['sting','stung','stung'],['stink','stank','stunk'],['swear','swore','sworn'],['sweep','swept','swept'],['swim','swam','swum'],['swing','swung','swung'],['take','took','taken'],['teach','taught','taught'],['tear','tore','torn'],['tell','told','told'],['think','thought','thought'],['throw','threw','thrown'],['understand','understood','understood'],['wake','woke','woken'],['wear','wore','worn'],['win','won','won'],['write','wrote','written']
+    ];
+    let totalPreguntas = 10;
+    let aciertos = 0;
+    let total = 0;
+    let respondido = false;
+    let terminado = false;
+    const score = document.getElementById('score');
+    const question = document.getElementById('question');
+    const options = document.getElementById('options');
+    const next = document.getElementById('next');
+    const reset = document.getElementById('reset');
+    const finish = document.getElementById('finish');
+    const size10 = document.getElementById('size10');
+    const size20 = document.getElementById('size20');
+    function actualizarScore(){ score.textContent = 'Aciertos: ' + aciertos + ' / ' + total + ' · Objetivo: ' + totalPreguntas; }
+    function random(){ return verbs[Math.floor(Math.random()*verbs.length)]; }
+    let current = null;
+    function renderPregunta(){
+      if(terminado) return;
+      if(total>=totalPreguntas){ mostrarFin(); return; }
+      const v = random();
+      current = v;
+      question.textContent = 'base: ' + v[0] + ' · ¿past simple y -ed form?';
+      options.innerHTML = '';
+      const distract = [];
+      while(distract.length<2){
+        const d = random();
+        if(d[0]!==v[0] && !distract.find(x=>x[1]===d[1] && x[2]===d[2])) distract.push(d);
+      }
+      const candidates = [[v[1]+' / '+v[2], true], [distract[0][1]+' / '+distract[0][2], false], [distract[1][1]+' / '+distract[1][2], false]].sort(()=>Math.random()-0.5);
+      candidates.forEach(([label,correct])=>{
+        const b=document.createElement('button');
+        b.className='px-4 py-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 transition disabled:opacity-70';
+        b.textContent=label;
+        b.addEventListener('click',()=>seleccionar(b,correct));
+        options.appendChild(b);
+      });
+      next.disabled=true;
+      respondido=false;
+    }
+    function seleccionar(btn,isCorrect){
+      if(respondido) return;
+      respondido=true;
+      total+=1;
+      const btns=Array.from(options.querySelectorAll('button'));
+      btns.forEach(b=>b.disabled=true);
+      const removeBase=b=>{ b.classList.remove('bg-slate-800','border-slate-700','text-slate-100'); };
+      if(isCorrect){ aciertos+=1; removeBase(btn); btn.classList.add('bg-green-500','text-green-950','border-green-600'); }
+      else {
+        removeBase(btn); btn.classList.add('bg-red-500','text-red-950','border-red-600');
+        const correctoBtn=btns.find(b=>b.textContent===current[1]+' / '+current[2]);
+        if(correctoBtn){ removeBase(correctoBtn); correctoBtn.classList.add('bg-green-500','text-green-950','border-green-600'); }
+      }
+      actualizarScore();
+      if(total>=totalPreguntas){ next.disabled=true; finish.disabled=false; } else { next.disabled=false; finish.disabled=true; }
+    }
+    function mostrarFin(){ terminado=true; const nota=Math.max(1,Math.round((aciertos/totalPreguntas)*10)); question.textContent='Has terminado el examen de '+totalPreguntas+' preguntas. Aciertos: '+aciertos+' / '+totalPreguntas+'. Nota: '+nota+' / 10'; options.innerHTML=''; next.disabled=true; finish.disabled=true; }
+    function reiniciar(){ aciertos=0; total=0; terminado=false; actualizarScore(); finish.disabled=true; renderPregunta(); }
+    next.addEventListener('click',renderPregunta);
+    reset.addEventListener('click',reiniciar);
+    function setActive(btn){ [size10,size20].forEach(b=>b.classList.remove('bg-indigo-600','border-indigo-700','text-white')); btn.classList.add('bg-indigo-600','border-indigo-700','text-white'); }
+    size10.addEventListener('click',()=>{ totalPreguntas=10; setActive(size10); reiniciar(); });
+    size20.addEventListener('click',()=>{ totalPreguntas=20; setActive(size20); reiniciar(); });
+    setActive(size10);
+    reiniciar();
+  </script>
+  <script>
+    const verbsFill = [
+      ['be','was/were','been'],['beat','beat','beaten'],['become','became','become'],['begin','began','begun'],['bend','bent','bent'],['bet','bet','bet'],['bite','bit','bitten'],['bleed','bled','bled'],['blow','blew','blown'],['break','broke','broken'],['breed','bred','bred'],['bring','brought','brought'],['build','built','built'],['burn','burnt/burned','burnt/burned'],['buy','bought','bought'],['catch','caught','caught'],['choose','chose','chosen'],['come','came','come'],['cost','cost','cost'],['cut','cut','cut'],['do','did','done'],['dig','dug','dug'],['draw','drew','drawn'],['dream','dreamt/dreamed','dreamt/dreamed'],['drink','drank','drunk'],['drive','drove','driven'],['eat','ate','eaten'],['fall','fell','fallen'],['feed','fed','fed'],['feel','felt','felt'],['fight','fought','fought'],['find','found','found'],['fly','flew','flown'],['forget','forgot','forgotten'],['forgive','forgave','forgiven'],['freeze','froze','frozen'],['get','got','got'],['give','gave','given'],['go','went','gone'],['grow','grew','grown'],['have','had','had'],['hear','heard','heard'],['hide','hid','hidden'],['hit','hit','hit'],['hold','held','held'],['hurt','hurt','hurt'],['keep','kept','kept'],['know','knew','known'],['lay','laid','laid'],['lead','led','led'],['lean','leant/leaned','leant/leaned'],['leave','left','left'],['lend','lent','lent'],['let','let','let'],['lose','lost','lost'],['make','made','made'],['mean','meant','meant'],['meet','met','met'],['pay','paid','paid'],['put','put','put'],['quit','quit','quit'],['read','read','read'],['ride','rode','ridden'],['ring','rang','rung'],['rise','rose','risen'],['run','ran','run'],['say','said','said'],['see','saw','seen'],['sell','sold','sold'],['send','sent','sent'],['set','set','set'],['shake','shook','shaken'],['shine','shone','shone'],['shoe','shod','shod'],['shoot','shot','shot'],['show','showed','shown'],['shrink','shrank','shrunk'],['shut','shut','shut'],['sing','sang','sung'],['sink','sank','sunk'],['sit','sat','sat'],['sleep','slept','slept'],['speak','spoke','spoken'],['spend','spent','spent'],['spill','spilt/spilled','spilt/spilled'],['spread','spread','spread'],['speed','sped','sped'],['stand','stood','stood'],['steal','stole','stolen'],['stick','stuck','stuck'],['sting','stung','stung'],['stink','stank','stunk'],['swear','swore','sworn'],['sweep','swept','swept'],['swim','swam','swum'],['swing','swung','swung'],['take','took','taken'],['teach','taught','taught'],['tear','tore','torn'],['tell','told','told'],['think','thought','thought'],['throw','threw','thrown'],['understand','understood','understood'],['wake','woke','woken'],['wear','wore','worn'],['win','won','won'],['write','wrote','written']
+    ];
+    let currentFill = null, aciertosFill = 0, totalFill = 0;
+    const baseElFill = document.getElementById('baseFill');
+    const pastElFill = document.getElementById('pastFill');
+    const partElFill = document.getElementById('partFill');
+    const scoreElFill = document.getElementById('scoreFill');
+    const feedbackElFill = document.getElementById('feedbackFill');
+    function randomFill(){ return verbsFill[Math.floor(Math.random()*verbsFill.length)]; }
+    function actualizarScoreFill(){
+      const pct = totalFill ? Math.round((aciertosFill / totalFill) * 100) : 0;
+      scoreElFill.textContent = 'Aciertos: ' + aciertosFill + ' (' + pct + '%) / ' + totalFill;
+    }
+    function renderFill(){ currentFill = randomFill(); baseElFill.textContent = currentFill[0]; pastElFill.value=''; partElFill.value=''; feedbackElFill.textContent=''; }
+    document.getElementById('checkFill').addEventListener('click', () => {
+      totalFill += 1;
+      const p = pastElFill.value.trim().toLowerCase();
+      const pp = partElFill.value.trim().toLowerCase();
+      const ok = (p === currentFill[1].toLowerCase()) && (pp === currentFill[2].toLowerCase());
+      if (ok) { aciertosFill += 1; feedbackElFill.textContent = 'Correcto'; feedbackElFill.className = 'mt-3 text-green-400'; }
+      else {
+        feedbackElFill.className = 'mt-3 text-red-400';
+        feedbackElFill.textContent = 'Incorrecto · Solución: ' + currentFill[1] + ' / ' + currentFill[2];
+      }
+      actualizarScoreFill();
+    });
+    document.getElementById('nextFill').addEventListener('click', renderFill);
+    document.getElementById('resetFill').addEventListener('click', () => { aciertosFill=0; totalFill=0; actualizarScoreFill(); renderFill(); });
+    actualizarScoreFill(); renderFill();
+  </script>
+  <script>
+    (function(){
+      try {
+        history.pushState({cw:1}, '', window.location.href);
+        window.addEventListener('popstate', function(){ location.href = new URL('subject.html?subject=Inglés', window.location.href).href; });
+        var back = document.getElementById('backLink');
+        if (back) {
+          back.addEventListener('click', function(e){
+            e.preventDefault();
+            location.href = new URL('subject.html?subject=Inglés', window.location.href).href;
+          });
+        }
+      } catch(e){}
+    })();
+  </script>
+</body>
+</html>

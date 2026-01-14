@@ -14,7 +14,15 @@
       "practice_href": "lengua_u2_practica.html"
     }
   ],
-  "Inglés": [],
+  "Inglés": [
+    {
+      "title": "Verbos Irregulares",
+      "description": "Apuntes, práctica y examen",
+      "notes_href": "ingles_irregulares_apuntes.html",
+      "practice_href": "ingles_irregulares_practica.html",
+      "exam_href": "ingles_irregulares_examen.html"
+    }
+  ],
   "Francés": [],
   "Biologia": [],
   "Historia": [],
